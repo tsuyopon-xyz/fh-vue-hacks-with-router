@@ -1,71 +1,50 @@
-## エクササイズ
+# エクササイズ
 
-掲示板アプリを作る
+ページ切り替えができる掲示板アプリを作る
 
-## ステップ1. 開発のベース作り
+(Vue編の「【エクササイズ】掲示板アプリを作る」で作成したアプリに機能追加をする形)
 
-以下の5つを行う
+## ステップ1. Vue Routerの追加と、それに伴う不要ファイルの削除と一部ファイルの修正を行う
 
-- 完成形の動作確認(これから実装するアプリのイメージを把握する)
-- Vue CLIでVueの開発環境の構築
-- 不要なファイルの削除
-- normalize.cssのインストール
-- npm run serveでの動作確認
+1. 完成形の動作確認(これから実装するアプリのイメージを把握する)
+1. Vue編の「【エクササイズ】掲示板アプリを作る」のコードをgit cloneして前回課題の完成形をダウンロードする
+    - もしくは自分で作成したアプリを使うのであれば、git cloneの必要は無し
+1. Vue Routerを追加する
+1. Vue Routerを追加した際の不要ファイルの削除とコード一部修正
 
 ---
 
-## ステップ2. コンポーネント作成その1(見た目部分)
+## ステップ2. 「ページ別のコンポーネント作成」、「ルーティングの設定」、「router-link, router-viewの埋め込み」を行う
 
 以下3つのコンポーネント作成を行う。
 
-- Header.vue
-- SideMenu.vue
-- Main.vue
-
-App.vueで上記3つを読み込み、
-
-- Headerの固定
-- SideMenuの固定
-- Main.vue部分のみ縦にコンテンツが長いとスクロールすることを確認する
-
----
-
-## ステップ3. コンポーネント作成その2(見た目部分)
-
-以下4つのコンポーネント作成を行う。
-(機能実装は後回し)
-
-- Button.vue
-- TextBox.vuez
-- MessageList.vue
-- Message.vue
-
+1. 3ページ分のコンポーネントファイルを作成する(src/viewsディレクトリの中)
+    - 全体連絡 : General.vue
+    - 雑談 : Chat.vue
+    - 自己紹介 : SelfIntroduction.vue
+1. ルーティングの設定をする(src/router/index.js)
+    - 作成した3つのコンポーネントをセットする
+    - 今回のpath設定
+      - /                  : Generalコンポーネント
+      - /chat              : Chatコンポーネント
+      - /self-introduction : SelfIntroductionコンポーネント
+1. App.vueの修正
+    - Main.vueのstyleを持ってくる
+    - Mainコンポーネントを埋め込んでたところに「router-view」を埋め込む
+1. SideMenu.vueに「router-link」を使ってページ遷移行えるようにする
+    - v-forで実装できるように、リンク作成に必要な情報を配列で用意する
+    - styleの調整
 
 ---
 
-## ステップ4. Main.vue → MessageList.vue → Message.vueのデータの流れを作る
+## ステップ3. 「Main.vueの名前変更」と「3つのページコンポーネントの具体的な実装」を行う
 
-- Main.vueでダミーの10件の配列データを作る
-  - 1件1件のデータは「body」「date」プロパティを持ったオブジェクトで、どちらもstring型
-- Main.vueで作った10件のダミーデータをMessageList.vueに渡す
-  - propsの設定とvalidationの実装を行う
-- 3で作ったMessageList.vueの「v-for="n in 10"」の代わりに「v-for="(message, index) in messages"」を使う
-- messageデータをMessageに渡す
-
----
-
-
-## ステップ5. Main.vueとTextBox.vueの連携部分を実装する
-
-- TextBox.vueの投稿ボタンをクリックしたときの動作を実装する
-    - TextBox.vue(=子コンポーネント)
-        - 文字入力がない場合(=彼文字列)はalertで1文字以上の入力が必要であることを知らせる
-        - 文字が入力されていたら「body」「date」プロパティを持つオブジェクトを作る
-            - body: 入力した文字をセットする
-            - date: 「new Date().toLocaleString()」結果をセットする
-        - propsで受け取った関数経由で、親(Main.vue)に作成したオブジェクトを渡す
-    - Main.vue(=親コンポーネント)
-        - 4で作ったMessageList.vueに渡すダミーデータを削除する
-        - TextBox.vueから受け取ったオブジェクトをdataの配列messagesに追加する
-        - computedで配列messagesを反転する
-        - 反転したmessagesをMessagesList.vueに渡す
+1. 「Main.vue → MessageView.vue」に名前を変更する
+1. 作成した3つのページコンポーネント内に「MessageView.vue」を埋め込む
+1. 「MessageView.vue」のコードを一部修正する
+1. ページを切り替える毎にデータが消える問題を解決する
+  - Vueの機能「keep-alive」を使う
+      - ページ切替時にコンポーネントを削除せずにキャッシュに残しておく(裏側で状態を保持しておく)
+      - 参考ドキュメント
+          - https://jp.vuejs.org/v2/guide/components-dynamic-async.html
+          - https://router.vuejs.org/ja/api/#router-view
