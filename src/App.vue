@@ -4,7 +4,9 @@
     <div class="app-container">
       <SideMenu />
       <main class="main-container">
-        <router-view></router-view>
+        <keep-alive>
+          <router-view></router-view>
+        </keep-alive>
       </main>
     </div>
   </div>
